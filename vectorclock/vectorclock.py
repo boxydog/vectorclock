@@ -91,8 +91,8 @@ class VectorClock:
             return max_clock1 - max_clock2
 
         # Still tied.  Tiebreak by json dict.
-        sc_str = json.dumps(self.clocks, sort_keys=True, default=str)
-        oc_str = json.dumps(other.clocks, sort_keys=True, default=str)
+        sc_str = str(self)
+        oc_str = str(other)
 
         if sc_str < oc_str:
             return -1

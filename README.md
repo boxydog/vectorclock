@@ -33,3 +33,11 @@ python -m build
 ```
 
 See also https://packaging.python.org/en/latest/tutorials/packaging-projects/#generating-distribution-archives.
+
+Uploading to pypi
+-----------------
+
+```
+python -m pip install twine
+twine check dist/*
+```

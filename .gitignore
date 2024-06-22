@@ -1,0 +1,15 @@
+# python
+__pycache__
+
+# direnv
+.envrc
+
+# virtual env
+.venv
+
+# pycharm
+.idea
+
+# build directories
+dist
+vectorclock.egg-info

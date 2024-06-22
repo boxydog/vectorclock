@@ -17,6 +17,23 @@ client asks for.  Our processes can set the counter to their own clock,
 hence allow us to resolve conflicts (unordered changes) by leaning towards
 later (more recent) object versions.
 
+Using
+-----
+
+```
+>>> from vectorclock import VectorClock
+>>> vca1 = VectorClock({"A":1})
+>>> vca2 = VectorClock.from_string('{"A":2}')
+>>> print(vca1 < vca2)
+True
+>>> print(vca1 == vca2)
+False
+>>> print(vca1 > vca2)
+False
+>>> print(str(vca1))
+{"A":1}
+```
+
 Testing
 -------
 

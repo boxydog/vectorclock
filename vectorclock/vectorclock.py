@@ -1,6 +1,6 @@
 import json
 from json import JSONDecodeError
-from typing import Union
+from typing import Dict, Optional, Union
 
 
 class VectorClock:
@@ -22,22 +22,21 @@ class VectorClock:
     later (more recent) object versions.
     """
 
-    def __init__(self, counts):
+    def __init__(self, counts: Dict[str, int]) -> None:
         """clocks is a dict mapping clock -> value (numeric value)."""
         self.clocks = counts.copy()
 
-    def set_clock(self, clock, value: int) -> None:
+    def set_clock(self, clock: str, value: int) -> None:
         # assert increasing only
         old = self.clocks.get(clock, None)
         if not (old is None or old <= value):
             raise ValueError(f"Can't go backwards from {old} to {value}")
         self.clocks[clock] = value
 
-    def get_clock(self, clock, default=None) -> int:
+    def get_clock(self, clock: str, default: Optional[int] = None) -> int:
         return self.clocks.get(clock, default)
 
-    # pylint: disable-next=too-many-return-statements,too-many-branches
-    def _compare(self, other) -> Union[int, None]:
+    def _compare(self, other: "VectorClock") -> Union[int, None]:  # noqa: PLR0911, PLR0912
         all_keys = self.clocks.keys() | other.clocks.keys()
 
         # if there are keys, and every element in the vector is ==, then ==
@@ -92,8 +91,8 @@ class VectorClock:
             return max_clock1 - max_clock2
 
         # Still tied.  Tiebreak by json dict.
-        sc_str = json.dumps(self.clocks, sort_keys=True, default=str)
-        oc_str = json.dumps(other.clocks, sort_keys=True, default=str)
+        sc_str = str(self)
+        oc_str = str(other)
 
         if sc_str < oc_str:
             return -1
@@ -102,22 +101,22 @@ class VectorClock:
 
         return 0
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: "VectorClock") -> bool:
         return self._compare(other) == 0
 
-    def __ne__(self, other) -> bool:
+    def __ne__(self, other: "VectorClock") -> bool:
         return self._compare(other) != 0
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: "VectorClock") -> bool:
         return self._compare(other) < 0
 
-    def __le__(self, other) -> bool:
+    def __le__(self, other: "VectorClock") -> bool:
         return self._compare(other) != 1
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other: "VectorClock") -> bool:
         return self._compare(other) > 0
 
-    def __ge__(self, other) -> bool:
+    def __ge__(self, other: "VectorClock") -> bool:
         return self._compare(other) != -1
 
     def __str__(self) -> str:
@@ -133,7 +132,7 @@ class VectorClock:
         return f"VectorClock({self.clocks})"
 
     @staticmethod
-    def from_string(string) -> "VectorClock":
+    def from_string(string: str) -> "VectorClock":
         try:
             return VectorClock(json.loads(string))
         except JSONDecodeError as err:

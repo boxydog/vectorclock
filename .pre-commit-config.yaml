@@ -1,0 +1,32 @@
+# See http://pre-commit.com/#python
+# See https://github.com/pre-commit/pre-commit-hooks
+# Run 'pre-commit install' to install the pre-commit hooks
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.6.0
+  hooks:
+  - id: check-added-large-files
+  - id: check-ast
+  - id: check-case-conflict
+  - id: check-docstring-first
+  - id: check-merge-conflict
+  - id: check-symlinks
+  - id: debug-statements
+  - id: detect-private-key
+  # ruff handles quoting
+  # - id: double-quote-string-fixer
+  - id: end-of-file-fixer
+  - id: mixed-line-ending
+  - id: trailing-whitespace
+    exclude: (.csv|.tsv)$
+  - id: pretty-format-json
+    args: ['--no-sort-keys', '--autofix']
+  # don't commit directly to main or master
+  - id: no-commit-to-branch
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.4.7
+  hooks:
+    - id: ruff
+      args: [--fix, --exit-non-zero-on-fix]
+    - id: ruff-format

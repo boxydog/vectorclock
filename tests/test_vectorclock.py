@@ -9,13 +9,9 @@ class TestVectorClock(unittest.TestCase):
         # self-comparison
         self.assertEqual(vca1, vca1)
         self.assertEqual(0, vca1._compare(vca1))
-        # pylint: disable-next=comparison-with-itself
         self.assertFalse(vca1 > vca1)
-        # pylint: disable-next=comparison-with-itself
         self.assertTrue(vca1 >= vca1)
-        # pylint: disable-next=comparison-with-itself
         self.assertFalse(vca1 < vca1)
-        # pylint: disable-next=comparison-with-itself
         self.assertTrue(vca1 <= vca1)
 
         # None comparison

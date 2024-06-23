@@ -8,7 +8,7 @@ class TestVectorClock(unittest.TestCase):
         vca1 = VectorClock({"A": 1})
         # self-comparison
         self.assertEqual(vca1, vca1)
-        self.assertEqual(0, vca1._compare(vca1))
+        self.assertEqual(0, vca1.compare(vca1))
         self.assertFalse(vca1 > vca1)
         self.assertTrue(vca1 >= vca1)
         self.assertFalse(vca1 < vca1)
@@ -27,7 +27,7 @@ class TestVectorClock(unittest.TestCase):
         self.assertGreaterEqual(vca2, vca1)
 
         # different processes with tied max clock
-        # these are unordered but, we tie-break deterministically
+        # these are unordered but, we tie-break deterministically by default
         vcb = VectorClock({"B": 1})
         self.assertFalse(vca1 == vcb)
         self.assertFalse(vca1 > vcb)
@@ -35,6 +35,11 @@ class TestVectorClock(unittest.TestCase):
         self.assertTrue(vca1 != vcb)
         self.assertTrue(vca1 < vcb)
         self.assertTrue(vca1 <= vcb)
+
+        # If we tie-break (default), these are ordered, and compare returns -1
+        self.assertEqual(-1, vca1.compare(vcb))
+        # If we don't tie-break, these are unordered, and compare returns 0
+        self.assertEqual(0, vca1.compare(vcb, tiebreak=False))
 
         # different processes with different max clock
         # pick the higher max
@@ -50,7 +55,7 @@ class TestVectorClock(unittest.TestCase):
         # adding an element makes rev go up
         vcc = VectorClock({"client": 44})
         vcs = VectorClock({"client": 44, "server": 38})
-        self.assertEqual(-1, vcc._compare(vcs))
+        self.assertEqual(-1, vcc.compare(vcs))
 
         # TODO: random cases testing that adding an element makes rev go up
 
@@ -58,7 +63,7 @@ class TestVectorClock(unittest.TestCase):
         # adding an element makes rev go up
         vc1 = VectorClock({"client": 1, "server": 2})
         vc2 = VectorClock({"client": 2, "server": 1})
-        self.assertEqual(-1, vc1._compare(vc2))
+        self.assertEqual(-1, vc1.compare(vc2))
 
     def test_setgetclock(self):
         vca1 = VectorClock({})

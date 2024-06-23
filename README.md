@@ -41,6 +41,8 @@ False
 False
 >>> print(vca1 < vcb)
 False
+>>> print(vca1 > vcb)
+False
 # If tie-breaking is off, they are not ordered (but not equal!)
 >>> print(vca1.compare(vcb, tiebreak=False))
 0

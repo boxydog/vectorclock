@@ -57,4 +57,11 @@ Uploading to pypi
 ```
 python -m pip install twine
 twine check dist/*
+twine upload -r testpypi dist/*
+```
+
+Check that the distribution looks as expected.  Now:
+
+```
+twine upload -r pypi dist/*
 ```

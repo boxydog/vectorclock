@@ -36,7 +36,17 @@ class VectorClock:
     def get_clock(self, clock: str, default: Optional[int] = None) -> int:
         return self.clocks.get(clock, default)
 
-    def _compare(self, other: "VectorClock") -> Union[int, None]:  # noqa: PLR0911, PLR0912
+    def compare(self, other: "VectorClock", tiebreak=True) -> Union[int, None]:
+        """Compare two clocks.
+
+        :param other:  Vector clock to compare to.
+        :param tiebreak:  If True, tiebreak two clocks that are not otherwise ordered
+                          in the traditional sense of a vector clock.
+        :return: -1 if self < other, 1 if self > other, 0 otherwise.
+                 If tiebreak is False, 0 does not mean they are equal,
+                 it means they are not ordered.
+                 If tiebreak is True, 0 means they are equal.
+        """
         all_keys = self.clocks.keys() | other.clocks.keys()
 
         # if there are keys, and every element in the vector is ==, then ==
@@ -78,7 +88,14 @@ class VectorClock:
         if all_ge and some_gt:
             return 1
 
-        # If it's not <, >, or ==, then we tiebreak
+        if tiebreak:
+            # If it's not <, >, or ==, then we tiebreak
+            return self._compare_tiebreak(other)
+
+        return 0
+
+    def _compare_tiebreak(self, other):
+        """Tiebreak two clocks even if they are not ordered."""
 
         # First, tiebreak by picking the highest clock value (to try to lean
         # towards more recency)
@@ -93,31 +110,29 @@ class VectorClock:
         # Still tied.  Tiebreak by json dict.
         sc_str = str(self)
         oc_str = str(other)
-
         if sc_str < oc_str:
             return -1
         if sc_str > oc_str:
             return 1
-
         return 0
 
     def __eq__(self, other: "VectorClock") -> bool:
-        return self._compare(other) == 0
+        return self.compare(other) == 0
 
     def __ne__(self, other: "VectorClock") -> bool:
-        return self._compare(other) != 0
+        return self.compare(other) != 0
 
     def __lt__(self, other: "VectorClock") -> bool:
-        return self._compare(other) < 0
+        return self.compare(other) < 0
 
     def __le__(self, other: "VectorClock") -> bool:
-        return self._compare(other) != 1
+        return self.compare(other) != 1
 
     def __gt__(self, other: "VectorClock") -> bool:
-        return self._compare(other) > 0
+        return self.compare(other) > 0
 
     def __ge__(self, other: "VectorClock") -> bool:
-        return self._compare(other) != -1
+        return self.compare(other) != -1
 
     def __str__(self) -> str:
         return json.dumps(

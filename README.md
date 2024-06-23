@@ -26,13 +26,29 @@ Using
 >>> vca2 = VectorClock.from_string('{"A":2}')
 >>> print(vca1 < vca2)
 True
+>>> print(vca1 != vca2)
+True
 >>> print(vca1 == vca2)
 False
 >>> print(vca1 > vca2)
 False
 >>> print(str(vca1))
 {"A":1}
+
+# these two clocks are not ordered, but we tie-break by default
+>>> vcb = VectorClock({"B": 1})
+>>> print(vca1 == vcb)
+False
+>>> print(vca1 < vcb)
+True
+>>> print(vca1.compare(vcb))
+-1
+# If tie-breaking is off, they are not ordered (but not equal!)
+>>> print(vca1.compare(vcb, tiebreak=False))
+0
 ```
+
+The rest of this README is for vectorclock developers.
 
 Testing
 -------

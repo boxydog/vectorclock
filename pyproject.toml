@@ -2,7 +2,8 @@
 name = "vectorclock"
 authors = [{ name = "boxydog"}]
 description = "A vector clock"
-version = "0.5.1"
+# also change version in setup.cfg
+version = "0.5.2"
 license = {text = "MIT License"}
 readme = "README.md"
 keywords = ["vector clock"]
@@ -67,4 +68,4 @@ select = [
 
 [tool.ruff.lint.extend-per-file-ignores]
 
-"tests/test_vectorclock.py" = ["SLF001", "PLR0124"]
+"tests/test_vectorclock.py" = ["PLR0124"]

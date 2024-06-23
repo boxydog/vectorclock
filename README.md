@@ -35,17 +35,18 @@ False
 >>> print(str(vca1))
 {"A":1}
 
-# these two clocks are not ordered, but we tie-break by default
+# these two clocks are not ordered
 >>> vcb = VectorClock({"B": 1})
 >>> print(vca1 == vcb)
 False
 >>> print(vca1 < vcb)
-True
->>> print(vca1.compare(vcb))
--1
+False
 # If tie-breaking is off, they are not ordered (but not equal!)
 >>> print(vca1.compare(vcb, tiebreak=False))
 0
+# If tie-breaking is on, we pick an order (deterministically)
+>>> print(vca1.compare(vcb, tiebreak=True))
+-1
 ```
 
 The rest of this README is for vectorclock developers.

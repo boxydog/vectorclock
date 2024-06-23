@@ -3,7 +3,7 @@ name = "vectorclock"
 authors = [{ name = "boxydog"}]
 description = "A vector clock"
 # also change version in setup.cfg
-version = "0.5.2"
+version = "0.5.3"
 license = {text = "MIT License"}
 readme = "README.md"
 keywords = ["vector clock"]

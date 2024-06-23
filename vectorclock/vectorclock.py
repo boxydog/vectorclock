@@ -36,7 +36,7 @@ class VectorClock:
     def get_clock(self, clock: str, default: Optional[int] = None) -> int:
         return self.clocks.get(clock, default)
 
-    def compare(self, other: "VectorClock", tiebreak=True) -> Union[int, None]:
+    def compare(self, other: "VectorClock", tiebreak: bool) -> Union[int, None]:
         """Compare two clocks.
 
         :param other:  Vector clock to compare to.
@@ -116,23 +116,28 @@ class VectorClock:
             return 1
         return 0
 
+    # Equality is ambiguous: does it mean "the same" or simply "unordered"?
+    # We are going to implement it to mean "the same".
+    # So, unordered is not <, >, or ==.
+    # We will implement == and !=, but not <= or >=, as that is confusing.
+
     def __eq__(self, other: "VectorClock") -> bool:
-        return self.compare(other) == 0
+        return self.compare(other, True) == 0
 
     def __ne__(self, other: "VectorClock") -> bool:
-        return self.compare(other) != 0
+        return self.compare(other, True) != 0
 
     def __lt__(self, other: "VectorClock") -> bool:
-        return self.compare(other) < 0
+        return self.compare(other, False) < 0
 
-    def __le__(self, other: "VectorClock") -> bool:
-        return self.compare(other) != 1
+    # def __le__(self, other: "VectorClock") -> bool:
+    #     return self.compare(other) != 1
 
     def __gt__(self, other: "VectorClock") -> bool:
-        return self.compare(other) > 0
+        return self.compare(other, False) > 0
 
-    def __ge__(self, other: "VectorClock") -> bool:
-        return self.compare(other) != -1
+    # def __ge__(self, other: "VectorClock") -> bool:
+    #     return self.compare(other) != -1
 
     def __str__(self) -> str:
         return json.dumps(
